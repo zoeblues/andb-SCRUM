@@ -1,2 +1,2 @@
-# andb-SCRUM
+# ANDB-SCRUM
 Repo integrated with Jira Atlassian for ANDB project scrum classes.
