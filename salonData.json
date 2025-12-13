@@ -1,0 +1,87 @@
+{
+  "appointments": [
+    {
+      "id": 1,
+      "clientName": "Sarah Johnson",
+      "service": "Hair Color & Highlights",
+      "stylist": "Emily Davis",
+      "date": "2025-11-08",
+      "time": "10:00",
+      "duration": "2 hours",
+      "price": 180,
+      "status": "confirmed"
+    }
+  ],
+  "clients": [
+    {
+      "id": 101,
+      "name": "Sarah Johnson",
+      "phone": "555-1234",
+      "email": "sarah@example.com",
+      "lastVisit": "2025-11-08"
+    },
+    {
+      "id": 102,
+      "name": "Michael Chen",
+      "phone": "555-5678",
+      "email": "michael@example.com",
+      "lastVisit": "2025-11-01"
+    }
+  ],
+  "staff": [
+    {
+      "id": 1,
+      "name": "Emily Davis",
+      "email": "emily.d@salon.com",
+      "phone": "555-1001",
+      "specialties": [
+        "Color",
+        "Balayage"
+      ],
+      "status": "active",
+      "rating": 4.9,
+      "completedServices": 234
+    },
+    {
+      "id": 2,
+      "name": "James Wilson",
+      "email": "james.w@salon.com",
+      "phone": "555-1002",
+      "specialties": [
+        "Haircut",
+        "Barbering"
+      ],
+      "status": "active",
+      "rating": 4.5,
+      "completedServices": 180
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "name": "Women's Haircut",
+      "description": "Includes wash, cut, and style.",
+      "duration": "60 min",
+      "price": 65,
+      "category": "Haircuts"
+    },
+    {
+      "id": 2,
+      "name": "Balayage Treatment",
+      "description": "Hand-painted highlights for a natural look.",
+      "duration": "3 hours",
+      "price": 250,
+      "category": "Color"
+    },
+    {
+      "name": "Undercut",
+      "description": "",
+      "duration": "60 min",
+      "price": 20,
+      "category": "Haircuts",
+      "staffMemberId": 1,
+      "staffMemberName": "Emily Davis",
+      "id": 3
+    }
+  ]
+}
