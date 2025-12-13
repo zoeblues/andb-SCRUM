@@ -1,2 +1,9 @@
-# andb-SCRUM
-Repo integrated with Jira Atlassian for ANDB project scrum classes.
+
+  # Beauty Salon Add Service
+
+  ## Running the code
+
+  Run `npm i` to install the dependencies.
+
+  Run `npm run dev` to start the development server.
+  
