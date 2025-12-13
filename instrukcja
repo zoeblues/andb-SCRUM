@@ -1,0 +1,12 @@
+INSTRUKCJA ODPALENIA
+
+otwieramy pierwszy terminal i piszemy: node server.js
+OUTPUT mniej wiecej:
+PS C:\Users\alkka\OneDrive\Pulpit\xd> node server.js
+JSON Database Server running at http://localhost:3001
+
+otwieramy drugi terminal i piszemy: npm run dev
+OUTPUT mniej wiecej:
+VITE v6.3.5  ready in 362 ms
+
+  ➜  Local:   http://localhost:3000/
