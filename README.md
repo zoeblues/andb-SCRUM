@@ -1,7 +1,5 @@
 
-  # Beauty Salon Management App (Community)
-
-  This is a code bundle for Beauty Salon Management App (Community). The original project is available at https://www.figma.com/design/8Fy95jQCOWNVPeyYic5SPg/Beauty-Salon-Management-App--Community-.
+  # Beauty Salon Add Service
 
   ## Running the code
 
