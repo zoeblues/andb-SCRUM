@@ -63,7 +63,9 @@
       "description": "Includes wash, cut, and style.",
       "duration": "60 min",
       "price": 65,
-      "category": "Haircuts"
+      "category": "Haircuts",
+      "staffMemberId": 2,
+      "staffMemberName": "James Wilson"
     },
     {
       "id": 2,

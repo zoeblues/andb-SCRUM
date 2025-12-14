@@ -1,285 +1,151 @@
-import { useState } from "react";
-import { LayoutDashboard, Calendar, Users, UserCog, Scissors, Menu, X } from "lucide-react";
-import { Dashboard } from "./components/Dashboard";
+// App.tsx
+
+import { useState, useEffect } from "react";
+// ⚡️ NEW: Import Insights component and BarChart icon ⚡️
+import { LayoutDashboard, Calendar, Users, UserCog, Scissors, Menu, X, BarChart } from "lucide-react";
+
+// CRITICAL FIX: Ensure all imports start with './components/' from App.tsx (which is in src/)
 import { Staff } from "./components/Staff";
 import { Services } from "./components/Services";
-import { Button } from "./components/ui/button";
+import { Insights } from "./components/Insights"; // ⚡️ IMPORT NEW COMPONENT ⚡️
+import { Button } from "./components/ui/button"; // Path for UI components
 
-// Mock data
-const initialAppointments = [
-    {
-        id: 1,
-        clientName: "Sarah Johnson",
-        service: "Hair Color & Highlights",
-        stylist: "Emily Davis",
-        date: "2025-11-08",
-        time: "10:00",
-        duration: "2 hours",
-        price: 180,
-        status: "confirmed"
-    },
-    {
-        id: 2,
-        clientName: "Michael Chen",
-        service: "Men's Haircut",
-        stylist: "James Wilson",
-        date: "2025-11-08",
-        time: "11:30",
-        duration: "45 min",
-        price: 45,
-        status: "confirmed"
-    },
-    {
-        id: 3,
-        clientName: "Lisa Anderson",
-        service: "Balayage Treatment",
-        stylist: "Emily Davis",
-        date: "2025-11-08",
-        time: "14:00",
-        duration: "3 hours",
-        price: 250,
-        status: "pending"
-    },
-    {
-        id: 4,
-        clientName: "David Martinez",
-        service: "Beard Trim & Styling",
-        stylist: "James Wilson",
-        date: "2025-11-09",
-        time: "09:00",
-        duration: "30 min",
-        price: 30,
-        status: "confirmed"
-    },
-    {
-        id: 5,
-        clientName: "Emma Thompson",
-        service: "Keratin Treatment",
-        stylist: "Sophia Rodriguez",
-        date: "2025-11-09",
-        time: "13:00",
-        duration: "2.5 hours",
-        price: 200,
-        status: "confirmed"
-    }
-];
+const API_BASE_URL = "http://localhost:3001/api";
 
-const initialClients = [
-    {
-        id: 1,
-        name: "Sarah Johnson",
-        email: "sarah.j@email.com",
-        phone: "(555) 123-4567",
-        lastVisit: "2025-11-08",
-        totalVisits: 12,
-        totalSpent: 1850,
-        notes: "Prefers Emily as stylist"
-    },
-    {
-        id: 2,
-        name: "Michael Chen",
-        email: "m.chen@email.com",
-        phone: "(555) 234-5678",
-        lastVisit: "2025-11-08",
-        totalVisits: 8,
-        totalSpent: 360,
-        notes: ""
-    },
-    {
-        id: 3,
-        name: "Lisa Anderson",
-        email: "lisa.a@email.com",
-        phone: "(555) 345-6789",
-        lastVisit: "2025-10-25",
-        totalVisits: 15,
-        totalSpent: 2400,
-        notes: "Allergic to certain hair products"
-    },
-    {
-        id: 4,
-        name: "David Martinez",
-        email: "d.martinez@email.com",
-        phone: "(555) 456-7890",
-        lastVisit: "2025-10-30",
-        totalVisits: 6,
-        totalSpent: 180,
-        notes: ""
-    },
-    {
-        id: 5,
-        name: "Emma Thompson",
-        email: "emma.t@email.com",
-        phone: "(555) 567-8901",
-        lastVisit: "2025-11-02",
-        totalVisits: 10,
-        totalSpent: 1500,
-        notes: "VIP client"
-    }
-];
-
-const initialStaff = [
-    {
-        id: 1,
-        name: "Emily Davis",
-        email: "emily.d@salon.com",
-        phone: "(555) 111-2222",
-        specialties: ["Color", "Highlights", "Balayage"],
-        status: "active",
-        rating: 4.9,
-        completedServices: 234
-    },
-    {
-        id: 2,
-        name: "James Wilson",
-        email: "james.w@salon.com",
-        phone: "(555) 222-3333",
-        specialties: ["Men's Cut", "Beard Styling", "Fade"],
-        status: "active",
-        rating: 4.8,
-        completedServices: 189
-    },
-    {
-        id: 3,
-        name: "Sophia Rodriguez",
-        email: "sophia.r@salon.com",
-        phone: "(555) 333-4444",
-        specialties: ["Keratin", "Hair Treatments", "Styling"],
-        status: "active",
-        rating: 5.0,
-        completedServices: 156
-    },
-    {
-        id: 4,
-        name: "Oliver Martinez",
-        email: "oliver.m@salon.com",
-        phone: "(555) 444-5555",
-        specialties: ["Haircut", "Color", "Extensions"],
-        status: "active",
-        rating: 4.7,
-        completedServices: 142
-    }
-];
-
-const initialServices = [
-    {
-        id: 1,
-        name: "Women's Haircut",
-        category: "Haircuts",
-        description: "Professional haircut with wash and style",
-        duration: "60 min",
-        price: 65,
-        staffMemberId: 1, // Example initial assignment
-        staffMemberName: "Emily Davis"
-    },
-    {
-        id: 2,
-        name: "Men's Haircut",
-        category: "Haircuts",
-        description: "Classic or modern men's cut",
-        duration: "45 min",
-        price: 45,
-        staffMemberId: 2,
-        staffMemberName: "James Wilson"
-    },
-    {
-        id: 3,
-        name: "Hair Color & Highlights",
-        category: "Color Services",
-        description: "Full color or highlight service",
-        duration: "2 hours",
-        price: 180,
-        staffMemberId: 1,
-        staffMemberName: "Emily Davis"
-    },
-    {
-        id: 4,
-        name: "Balayage Treatment",
-        category: "Color Services",
-        description: "Hand-painted highlights for natural look",
-        duration: "3 hours",
-        price: 250,
-        staffMemberId: 3,
-        staffMemberName: "Sophia Rodriguez"
-    },
-    {
-        id: 5,
-        name: "Keratin Treatment",
-        category: "Treatments",
-        description: "Smoothing and strengthening treatment",
-        duration: "2.5 hours",
-        price: 200,
-        staffMemberId: 3,
-        staffMemberName: "Sophia Rodriguez"
-    },
-    {
-        id: 6,
-        name: "Deep Conditioning",
-        category: "Treatments",
-        description: "Intensive moisture treatment",
-        duration: "45 min",
-        price: 50,
-        staffMemberId: null,
-        staffMemberName: "Unassigned"
-    },
-    {
-        id: 7,
-        name: "Blowout & Styling",
-        category: "Styling",
-        description: "Professional blow dry and style",
-        duration: "45 min",
-        price: 55,
-        staffMemberId: 1,
-        staffMemberName: "Emily Davis"
-    },
-    {
-        id: 8,
-        name: "Beard Trim & Styling",
-        category: "Men's Services",
-        description: "Beard shaping and grooming",
-        duration: "30 min",
-        price: 30,
-        staffMemberId: 2,
-        staffMemberName: "James Wilson"
-    }
-];
-
-type TabType = "dashboard" | "appointments" | "clients" | "staff" | "services";
+// ⚡️ UPDATE TabType to include 'insights' ⚡️
+type TabType =  "staff" | "services" | "insights";
 
 export default function App() {
-    const [activeTab, setActiveTab] = useState<TabType>("dashboard");
-    const [appointments, setAppointments] = useState(initialAppointments);
-    const [clients, setClients] = useState(initialClients);
-    const [staff, setStaff] = useState(initialStaff);
-    const [services, setServices] = useState(initialServices);
+    // ⚡️ INITIALIZE STATE: Read from the URL hash, default to 'insights' ⚡️
+    const initialTab = (window.location.hash.slice(1) || "services") as TabType;
+    const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+
+    // Initialize data arrays as empty
+    const [staff, setStaff] = useState<any[]>([]);
+    const [services, setServices] = useState<any[]>([]);
+
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const handleAddAppointment = (appointment: any) => {
-        setAppointments([...appointments, appointment]);
+    // ⚡️ NEW HELPER FUNCTION to update state and URL ⚡️
+    const setTabAndHash = (tab: TabType) => {
+        setActiveTab(tab);
+        window.location.hash = tab;
     };
 
-    const handleAddClient = (client: any) => {
-        setClients([...clients, client]);
+    // 1. FETCH DATA ON INITIAL LOAD
+    useEffect(() => {
+        const fetchData = async (endpoint: string, setter: (data: any) => void) => {
+            try {
+                // Ensure the fetch URL is correct
+                const response = await fetch(`${API_BASE_URL}/${endpoint}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setter(data);
+                    console.log(`Successfully loaded ${endpoint} data.`);
+                } else {
+                    console.error(`Failed to fetch ${endpoint}:`, response.statusText);
+                }
+            } catch (error) {
+                console.error(`Error fetching ${endpoint}. Is the server on port 3001 running?`, error);
+            }
+        };
+
+        // Fetch required data sets from your running server
+        fetchData('staff', setStaff);
+        fetchData('services', setServices);
+        // Note: appointments/clients fetching is commented out in your version
+
+        // ⚡️ EFFECT TO HANDLE BROWSER BACK/FORWARD NAVIGATION ⚡️
+        const handleHashChange = () => {
+            const hashTab = window.location.hash.slice(1) as TabType;
+            if (hashTab && navItems.some(item => item.id === hashTab)) {
+                setActiveTab(hashTab);
+            }
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
+
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
+    }, []);
+
+    // 2. HANDLERS TO POST, PUT, DELETE DATA TO SERVER
+    // ... (Staff and Service handlers remain unchanged)
+
+    // STAFF HANDLERS
+    const handleAddStaff = async (member: any) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/staff`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(member),
+            });
+            if (response.ok) {
+                const newMember = await response.json();
+                setStaff(prevStaff => [...prevStaff, newMember]);
+            }
+        } catch (error) {
+            console.error("Failed to add staff member:", error);
+        }
     };
 
-    const handleAddStaff = (member: any) => {
-        setStaff([...staff, member]);
+    // SERVICE HANDLERS
+    const handleAddService = async (service: any) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/services`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(service),
+            });
+            if (response.ok) {
+                const newService = await response.json();
+                setServices(prevServices => [...prevServices, newService]);
+            }
+        } catch (error) {
+            console.error("Failed to add service:", error);
+        }
     };
 
-    const handleAddService = (service: any) => {
-        setServices([...services, service]);
+    const handleEditService = async (service: any) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/services/${service.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(service),
+            });
+            if (response.ok) {
+                const updatedService = await response.json();
+                setServices(prevServices => prevServices.map(s => s.id === updatedService.id ? updatedService : s));
+            }
+        } catch (error) {
+            console.error("Failed to edit service:", error);
+        }
     };
+
+    const handleDeleteService = async (serviceId: number) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
+                method: 'DELETE',
+            });
+            if (response.status === 204) {
+                setServices(prevServices => prevServices.filter(s => s.id !== serviceId));
+            }
+        } catch (error) {
+            console.error("Failed to delete service:", error);
+        }
+    };
+
 
     const navItems = [
-        { id: "dashboard" as TabType, label: "Insights", icon: LayoutDashboard },
-        //{ id: "appointments" as TabType, label: "Appointments", icon: Calendar },
-        //{ id: "clients" as TabType, label: "Clients", icon: Users },
+        { id: "services" as TabType, label: "Services", icon: Scissors },
         { id: "staff" as TabType, label: "Staff", icon: UserCog },
-        { id: "services" as TabType, label: "Services", icon: Scissors }
+        { id: "insights" as TabType, label: "Insights", icon: BarChart }
     ];
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Header */}
+            {/* Header (omitted for brevity) */}
             <header className="bg-white border-b sticky top-0 z-40">
                 <div className="px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
@@ -318,8 +184,9 @@ export default function App() {
                             return (
                                 <button
                                     key={item.id}
+                                    // ⚡️ UPDATED onClick handler ⚡️
                                     onClick={() => {
-                                        setActiveTab(item.id);
+                                        setTabAndHash(item.id);
                                         setMobileMenuOpen(false);
                                     }}
                                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
@@ -336,7 +203,7 @@ export default function App() {
                     </nav>
                 </aside>
 
-                {/* Overlay for mobile */}
+                {/* Overlay for mobile (omitted for brevity) */}
                 {mobileMenuOpen && (
                     <div
                         className="fixed inset-0 bg-black/20 z-20 lg:hidden"
@@ -346,19 +213,22 @@ export default function App() {
 
                 {/* Main Content */}
                 <main className="flex-1 p-4 sm:p-6 lg:p-8">
-                    {activeTab === "dashboard" && (
-                        <Dashboard appointments={appointments} clients={clients} staff={staff} />
-                    )}
-                    {activeTab === "staff" && (
-                        <Staff staff={staff} onAddStaff={handleAddStaff} />
-                    )}
                     {activeTab === "services" && (
                         <Services
                             services={services}
                             onAddService={handleAddService}
-                            staffMembers={staff} // <-- Staff data is correctly passed here
+                            onEditService={handleEditService}
+                            onDeleteService={handleDeleteService}
+                            staffMembers={staff}
                         />
                     )}
+                    {activeTab === "staff" && (
+                        <Staff staff={staff} onAddStaff={handleAddStaff} />
+                    )}
+                    {activeTab === "insights" && (
+                        <Insights />
+                    )}
+
                 </main>
             </div>
         </div>

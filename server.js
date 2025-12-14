@@ -71,6 +71,40 @@ app.post('/api/services', (req, res) => {
     res.status(201).json(newService);
 });
 
+// ⚡️ NEW: PUT (Edit) Service Endpoint ⚡️
+app.put('/api/services/:id', (req, res) => {
+    const serviceId = parseInt(req.params.id);
+    const updatedServiceData = req.body;
+    const data = readData();
+
+    const index = data.services.findIndex(s => s.id === serviceId);
+
+    if (index !== -1) {
+        // Preserve the original ID and merge the rest of the data
+        data.services[index] = { ...data.services[index], ...updatedServiceData, id: serviceId };
+        writeData(data);
+        res.json(data.services[index]);
+    } else {
+        res.status(404).json({ message: 'Service not found' });
+    }
+});
+
+// ⚡️ NEW: DELETE Service Endpoint ⚡️
+app.delete('/api/services/:id', (req, res) => {
+    const serviceId = parseInt(req.params.id);
+    const data = readData();
+
+    const initialLength = data.services.length;
+    data.services = data.services.filter(s => s.id !== serviceId);
+
+    if (data.services.length < initialLength) {
+        writeData(data);
+        res.status(204).send(); // 204 No Content for successful deletion
+    } else {
+        res.status(404).json({ message: 'Service not found' });
+    }
+});
+
 // APPOINTMENTS (GET is now correctly implemented)
 app.get('/api/appointments', (req, res) => {
     res.json(readData().appointments);

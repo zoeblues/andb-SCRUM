@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/andb-SCRUM.iml" filepath="$PROJECT_DIR$/.idea/andb-SCRUM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/styles.iml" filepath="$PROJECT_DIR$/.idea/styles.iml" />
     </modules>
   </component>
 </project>
