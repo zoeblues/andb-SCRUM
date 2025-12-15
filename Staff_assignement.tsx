@@ -11,7 +11,8 @@ interface StaffAssignmentDialogProps {
 }
 
 export function StaffAssignmentDialog({ isOpen, onClose, serviceName }: StaffAssignmentDialogProps) {
-  
+
+
   const [selectedStaff, setSelectedStaff] = React.useState<string | null>(null);
 
   const handleSave = () => {
