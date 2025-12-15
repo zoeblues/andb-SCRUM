@@ -5,9 +5,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Label } from "./ui/label";
 
 export function ServiceCategorizer() {
-    
+
+
     const [selectedServices, setSelectedServices] = React.useState<number[]>([]);
     const [targetCategory, setTargetCategory] = React.useState<string | null>(null);
+
 
     const handleApply = () => {
         if (selectedServices.length > 0 && targetCategory) {
