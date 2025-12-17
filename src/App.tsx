@@ -1,32 +1,32 @@
 // App.tsx
 
 import { useState, useEffect } from "react";
-// ⚡️ NEW: Import Insights component and BarChart icon ⚡️
 import { LayoutDashboard, Calendar, Users, UserCog, Scissors, Menu, X, BarChart } from "lucide-react";
+
 
 // CRITICAL FIX: Ensure all imports start with './components/' from App.tsx (which is in src/)
 import { Staff } from "./components/Staff";
 import { Services } from "./components/Services";
-import { Insights } from "./components/Insights"; // ⚡️ IMPORT NEW COMPONENT ⚡️
-import { Button } from "./components/ui/button"; // Path for UI components
+import { Insights } from "./components/Insights";
+import { Button } from "./components/ui/button";
 
 const API_BASE_URL = "http://localhost:3001/api";
 
-// ⚡️ UPDATE TabType to include 'insights' ⚡️
 type TabType =  "staff" | "services" | "insights";
 
 export default function App() {
-    // ⚡️ INITIALIZE STATE: Read from the URL hash, default to 'insights' ⚡️
+    // INITIALIZE STATE: Read from the URL hash, default to 'insights'
     const initialTab = (window.location.hash.slice(1) || "services") as TabType;
     const [activeTab, setActiveTab] = useState<TabType>(initialTab);
 
     // Initialize data arrays as empty
+    const [appointments, setAppointments] = useState<any[]>([]);
+    // const [clients, setClients] = useState<any[]>([]); // REMOVED
     const [staff, setStaff] = useState<any[]>([]);
     const [services, setServices] = useState<any[]>([]);
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    // ⚡️ NEW HELPER FUNCTION to update state and URL ⚡️
     const setTabAndHash = (tab: TabType) => {
         setActiveTab(tab);
         window.location.hash = tab;
@@ -36,7 +36,6 @@ export default function App() {
     useEffect(() => {
         const fetchData = async (endpoint: string, setter: (data: any) => void) => {
             try {
-                // Ensure the fetch URL is correct
                 const response = await fetch(`${API_BASE_URL}/${endpoint}`);
                 if (response.ok) {
                     const data = await response.json();
@@ -53,9 +52,10 @@ export default function App() {
         // Fetch required data sets from your running server
         fetchData('staff', setStaff);
         fetchData('services', setServices);
-        // Note: appointments/clients fetching is commented out in your version
+        // ⚡️ APPOINTMENTS FETCHING UNCOMMENTED ⚡️
+        fetchData('appointments', setAppointments);
+        // fetchData('clients', setClients); // REMOVED
 
-        // ⚡️ EFFECT TO HANDLE BROWSER BACK/FORWARD NAVIGATION ⚡️
         const handleHashChange = () => {
             const hashTab = window.location.hash.slice(1) as TabType;
             if (hashTab && navItems.some(item => item.id === hashTab)) {
@@ -71,7 +71,6 @@ export default function App() {
     }, []);
 
     // 2. HANDLERS TO POST, PUT, DELETE DATA TO SERVER
-    // ... (Staff and Service handlers remain unchanged)
 
     // STAFF HANDLERS
     const handleAddStaff = async (member: any) => {
@@ -136,11 +135,16 @@ export default function App() {
         }
     };
 
+    // Placeholder handlers (now only for appointments)
+    const handleAddAppointment = (appointment: any) => {
+        setAppointments(prevApts => [...prevApts, { id: Date.now(), ...appointment }]);
+    };
+    // handleAddClient removed
 
     const navItems = [
         { id: "services" as TabType, label: "Services", icon: Scissors },
         { id: "staff" as TabType, label: "Staff", icon: UserCog },
-        { id: "insights" as TabType, label: "Insights", icon: BarChart }
+        { id: "insights" as TabType, label: "Analytics", icon: BarChart }
     ];
 
     return (
@@ -171,7 +175,7 @@ export default function App() {
             </header>
 
             <div className="flex">
-                {/* Sidebar */}
+                {/* Sidebar (omitted for brevity) */}
                 <aside className={`
           fixed lg:sticky top-[73px] lg:top-[73px] left-0 z-30
           w-64 h-[calc(100vh-73px)] bg-white border-r
@@ -184,7 +188,6 @@ export default function App() {
                             return (
                                 <button
                                     key={item.id}
-                                    // ⚡️ UPDATED onClick handler ⚡️
                                     onClick={() => {
                                         setTabAndHash(item.id);
                                         setMobileMenuOpen(false);
@@ -203,7 +206,6 @@ export default function App() {
                     </nav>
                 </aside>
 
-                {/* Overlay for mobile (omitted for brevity) */}
                 {mobileMenuOpen && (
                     <div
                         className="fixed inset-0 bg-black/20 z-20 lg:hidden"
@@ -226,7 +228,8 @@ export default function App() {
                         <Staff staff={staff} onAddStaff={handleAddStaff} />
                     )}
                     {activeTab === "insights" && (
-                        <Insights />
+                        // ⚡️ PASS REQUIRED DATA TO INSIGHTS ⚡️
+                        <Insights appointments={appointments} services={services} />
                     )}
 
                 </main>
